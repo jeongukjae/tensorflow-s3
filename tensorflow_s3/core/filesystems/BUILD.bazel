@@ -1,0 +1,27 @@
+licenses(["notice"])  # Apache 2.0
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "filesystem_plugins_header",
+    srcs = [
+        "filesystem_plugins.h",
+    ],
+    linkstatic = True,
+    deps = [
+        "//third_party/tensorflow:tf_header_lib",
+    ],
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "filesystem_plugins",
+    srcs = [
+        "filesystem_plugins.cc",
+    ],
+    linkstatic = True,
+    deps = [
+        "//tensorflow_s3/core/filesystems/s3",
+    ],
+    alwayslink = 1,
+)

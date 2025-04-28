@@ -1,0 +1,16 @@
+build --repo_env=HERMETIC_PYTHON_VERSION=3.11
+
+build -c opt
+build --cxxopt="-std=c++17"
+
+build --enable_platform_specific_config
+build --experimental_repo_remote_exec
+query --experimental_repo_remote_exec
+
+build --verbose_failures
+build --test_output=errors
+
+build --copt="-fvisibility=hidden"
+
+# TensorFlow Specific configs
+build --repo_env TF_NEED_CUDA=0

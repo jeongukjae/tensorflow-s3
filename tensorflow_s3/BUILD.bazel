@@ -1,0 +1,18 @@
+load("@rules_python//python:packaging.bzl", "py_package")
+load("@rules_python//python:py_library.bzl", "py_library")
+
+cc_binary(
+    name = "libtensorflow_s3.so",
+    linkshared = 1,
+    deps = [
+        "//tensorflow_s3/core/filesystems:filesystem_plugins",
+    ],
+)
+
+py_library(
+    name = "tensorflow_s3",
+    srcs = ["__init__.py"],
+    deps = ["@pypi//tensorflow"],
+    data = [":libtensorflow_s3.so"],
+    visibility = ["//visibility:public"],
+)

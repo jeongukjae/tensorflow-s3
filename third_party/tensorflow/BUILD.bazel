@@ -1,0 +1,28 @@
+load("@rules_python//python:pip.bzl", "whl_filegroup")
+
+whl_filegroup(
+    name = "tensorflow_include",
+    pattern = "tensorflow/include",
+    whl = "@pypi//tensorflow:whl",
+)
+
+print("tensorflow_include", ":tensorflow_include")
+
+cc_library(
+    name = "tf_header_lib",
+    hdrs = [":tensorflow_include"],
+    includes = ["tensorflow_include/tensorflow/include"],
+    visibility = ["//visibility:public"],
+    # deps = [
+    #     "@com_google_absl//absl/status:statusor",
+    #     "@com_google_absl//absl/container:flat_hash_map",
+    #     "@com_google_absl//absl/container:flat_hash_set",
+    #     "@com_google_absl//absl/container:inlined_vector",
+    #     "@com_google_absl//absl/functional:any_invocable",
+    #     "@com_google_absl//absl/status",
+    #     "@com_google_absl//absl/strings",
+    #     "@com_google_absl//absl/strings:cord",
+    #     "@com_google_absl//absl/types:optional",
+    #     "@com_google_absl//absl/types:span",
+    # ],
+)

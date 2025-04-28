@@ -1,0 +1,178 @@
+# buildifier: disable=load-on-top
+
+workspace(name = "tensorflow_s3")
+
+# buildifier: disable=load-on-top
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "boringssl",
+    patch_cmds = [
+        """sed -i.bak 's/bio.c",/bio.c","src\\/decrepit\\/bio\\/base64_bio.c",/g' BUILD.generated.bzl""",
+    ],
+    sha256 = "a9c3b03657d507975a32732f04563132b4553c20747cec6dc04de475c8bdf29f",
+    strip_prefix = "boringssl-80ca9f9f6ece29ab132cce4cf807a9465a18cfac",
+    urls = [
+        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/google/boringssl/archive/80ca9f9f6ece29ab132cce4cf807a9465a18cfac.tar.gz",
+        "https://github.com/google/boringssl/archive/80ca9f9f6ece29ab132cce4cf807a9465a18cfac.tar.gz",
+    ],
+)
+
+# Loading TensorFlow
+
+http_archive(
+    name = "org_tensorflow",
+    sha256 = "4691b18e8c914cdf6759b80f1b3b7f3e17be41099607ed0143134f38836d058e",
+    strip_prefix = "tensorflow-2.19.0",
+    urls = [
+        "https://github.com/tensorflow/tensorflow/archive/refs/tags/v2.19.0.tar.gz",
+    ],
+)
+
+load("@org_tensorflow//tensorflow:workspace3.bzl", "tf_workspace3")
+
+tf_workspace3()
+
+# Initialize hermetic Python
+load("@local_tsl//third_party/py:python_init_rules.bzl", "python_init_rules")
+
+python_init_rules()
+
+load("@local_tsl//third_party/py:python_init_repositories.bzl", "python_init_repositories")
+
+python_init_repositories(
+    default_python_version = "system",
+    local_wheel_dist_folder = "dist",
+    local_wheel_inclusion_list = [
+        "tensorflow_s3*",
+    ],
+    local_wheel_workspaces = ["//:WORKSPACE.bazel"],
+    requirements = {
+        "3.10": "//:requirements-lock-3-10.txt",
+        "3.11": "//:requirements-lock-3-11.txt",
+        "3.12": "//:requirements-lock-3-12.txt",
+    },
+)
+
+load("@local_tsl//third_party/py:python_init_toolchains.bzl", "python_init_toolchains")
+
+python_init_toolchains()
+
+load("@local_tsl//third_party/py:python_init_pip.bzl", "python_init_pip")
+
+python_init_pip()
+
+load("@pypi//:requirements.bzl", "install_deps")
+
+install_deps()
+# End hermetic Python initialization
+
+load("@org_tensorflow//tensorflow:workspace2.bzl", "tf_workspace2")
+
+tf_workspace2()
+
+load("@org_tensorflow//tensorflow:workspace1.bzl", "tf_workspace1")
+
+tf_workspace1()
+
+load("@org_tensorflow//tensorflow:workspace0.bzl", "tf_workspace0")
+
+tf_workspace0()
+
+load(
+    "@local_tsl//third_party/gpus/cuda/hermetic:cuda_json_init_repository.bzl",
+    "cuda_json_init_repository",
+)
+
+cuda_json_init_repository()
+
+load(
+    "@cuda_redist_json//:distributions.bzl",
+    "CUDA_REDISTRIBUTIONS",
+    "CUDNN_REDISTRIBUTIONS",
+)
+load(
+    "@local_tsl//third_party/gpus/cuda/hermetic:cuda_redist_init_repositories.bzl",
+    "cuda_redist_init_repositories",
+    "cudnn_redist_init_repository",
+)
+
+cuda_redist_init_repositories(
+    cuda_redistributions = CUDA_REDISTRIBUTIONS,
+)
+
+cudnn_redist_init_repository(
+    cudnn_redistributions = CUDNN_REDISTRIBUTIONS,
+)
+
+load(
+    "@local_tsl//third_party/gpus/cuda/hermetic:cuda_configure.bzl",
+    "cuda_configure",
+)
+
+cuda_configure(name = "local_config_cuda")
+
+load(
+    "@local_tsl//third_party/nccl/hermetic:nccl_redist_init_repository.bzl",
+    "nccl_redist_init_repository",
+)
+
+nccl_redist_init_repository()
+
+load(
+    "@local_tsl//third_party/nccl/hermetic:nccl_configure.bzl",
+    "nccl_configure",
+)
+
+nccl_configure(name = "local_config_nccl")
+
+# Loading Plugin's Deps
+
+# S3
+http_archive(
+    name = "aws-checksums",
+    build_file = "//third_party/aws-checksums:aws-checksums.BUILD",
+    sha256 = "6e6bed6f75cf54006b6bafb01b3b96df19605572131a2260fddaf0e87949ced0",
+    strip_prefix = "aws-checksums-0.1.5",
+    urls = [
+        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/awslabs/aws-checksums/archive/v0.1.5.tar.gz",
+        "https://github.com/awslabs/aws-checksums/archive/v0.1.5.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "aws-c-common",
+    build_file = "//third_party/aws-c-common:aws-c-common.BUILD",
+    sha256 = "01c2a58553a37b3aa5914d9e0bf7bf14507ff4937bc5872a678892ca20fcae1f",
+    strip_prefix = "aws-c-common-0.4.29",
+    urls = [
+        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/awslabs/aws-c-common/archive/v0.4.29.tar.gz",
+        "https://github.com/awslabs/aws-c-common/archive/v0.4.29.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "aws-c-event-stream",
+    build_file = "//third_party/aws-c-event-stream:aws-c-event-stream.BUILD",
+    sha256 = "31d880d1c868d3f3df1e1f4b45e56ac73724a4dc3449d04d47fc0746f6f077b6",
+    strip_prefix = "aws-c-event-stream-0.1.4",
+    urls = [
+        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/awslabs/aws-c-event-stream/archive/v0.1.4.tar.gz",
+        "https://github.com/awslabs/aws-c-event-stream/archive/v0.1.4.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "aws-sdk-cpp",
+    build_file = "//third_party/aws-sdk-cpp:aws-sdk-cpp.BUILD",
+    patch_cmds = [
+        """sed -i.bak 's/UUID::RandomUUID/Aws::Utils::UUID::RandomUUID/g' aws-cpp-sdk-core/source/client/AWSClient.cpp""",
+        """sed -i.bak 's/__attribute__((visibility("default")))//g' aws-cpp-sdk-core/include/aws/core/external/tinyxml2/tinyxml2.h """,
+    ],
+    sha256 = "ae1cb22225b1f47eee351c0064be5e87676bf7090bb9ad19888bea0dab0e2749",
+    strip_prefix = "aws-sdk-cpp-1.8.187",
+    urls = [
+        "https://github.com/aws/aws-sdk-cpp/archive/1.8.187.tar.gz",
+    ],
+)
