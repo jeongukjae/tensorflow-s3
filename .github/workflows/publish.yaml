@@ -1,0 +1,29 @@
+name: Build and test all
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bazel-contrib/setup-bazel@0.14.0
+      with:
+        bazelisk-cache: true
+    - name: Build and test all modules
+      env:
+        HERMETIC_PYTHON_VERSION: ${{ matrix.python-version }}
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        bazel run --stamp --embed_label=${{ github.ref_name }} //:tensorflow_s3_wheel.publish

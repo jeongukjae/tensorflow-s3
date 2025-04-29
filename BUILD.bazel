@@ -30,6 +30,7 @@ py_wheel(
     name = "tensorflow_s3_wheel",
     abi = "$(ABI)",
     distribution = "tensorflow_s3",
+    dist_folder = "dist",
     python_tag = "$(PYTHON_TAG)",
     version = "0.0.1",
     platform = select({
@@ -39,6 +40,7 @@ py_wheel(
         ":x86_64-pc-windows-msvc": "win_amd64",
         ":x86_64-unknown-linux-gnu": "manylinux2014_x86_64",
     }),
+    twine = "@pypi_twine//:pkg",
     toolchains = [":make_variable_tags"],
     deps = [":tensorflow_s3"],
     requires = ["tensorflow>=2.19,<2.20"],
