@@ -6,19 +6,6 @@ workspace(name = "tensorflow_s3")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-http_archive(
-    name = "boringssl",
-    patch_cmds = [
-        """sed -i.bak 's/bio.c",/bio.c","src\\/decrepit\\/bio\\/base64_bio.c",/g' BUILD.generated.bzl""",
-    ],
-    sha256 = "a9c3b03657d507975a32732f04563132b4553c20747cec6dc04de475c8bdf29f",
-    strip_prefix = "boringssl-80ca9f9f6ece29ab132cce4cf807a9465a18cfac",
-    urls = [
-        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/google/boringssl/archive/80ca9f9f6ece29ab132cce4cf807a9465a18cfac.tar.gz",
-        "https://github.com/google/boringssl/archive/80ca9f9f6ece29ab132cce4cf807a9465a18cfac.tar.gz",
-    ],
-)
-
 # Loading TensorFlow
 
 http_archive(
