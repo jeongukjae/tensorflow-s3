@@ -1,4 +1,4 @@
-name: Build and test all
+name: Publish to PyPI
 
 on:
   push:
