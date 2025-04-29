@@ -26,5 +26,5 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        bazel build //...
+        bazel build @pypi//...
         bazel run --stamp --embed_label=${{ github.ref_name }} //:tensorflow_s3_wheel.publish
