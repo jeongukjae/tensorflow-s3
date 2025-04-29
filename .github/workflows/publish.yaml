@@ -23,9 +23,7 @@ jobs:
     - name: Build and test all modules
       env:
         HERMETIC_PYTHON_VERSION: ${{ matrix.python-version }}
-      run: |
-        bazel build @pypi//...
-        bazel build //:tensorflow_s3_wheel
+      run: bazel build //:tensorflow_s3_wheel
 
     - name: Set up Python
       uses: actions/setup-python@v2
