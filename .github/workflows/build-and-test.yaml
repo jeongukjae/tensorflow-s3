@@ -14,11 +14,6 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12"]
-        include:
-          - os: macos-latest
-            bazel-target: darwin
-          - os: ubuntu-latest
-            bazel-target: linux
 
     steps:
     - uses: actions/checkout@v2
@@ -26,6 +21,8 @@ jobs:
       with:
         bazelisk-cache: true
     - name: Build and test all modules
+      env:
+        HERMETIC_PYTHON_VERSION: ${{ matrix.python-version }}
       run: |
-        bazel build //... --repo_env=HERMETIC_PYTHON_VERSION=${{ matrix.python-version }}
-        bazel test //... --repo_env=HERMETIC_PYTHON_VERSION=${{ matrix.python-version }}
+        bazel build //...
+        bazel test //...
