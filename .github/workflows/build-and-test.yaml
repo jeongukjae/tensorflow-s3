@@ -22,14 +22,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }} for Linux
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
     - uses: bazel-contrib/setup-bazel@0.14.0
       with:
         bazelisk-cache: true
     - name: Build and test all modules
       run: |
-        bazel build //... --loading_phase_threads 2
-        bazel test //...
+        bazel build //... --HERMETIC_PYTHON_VERSION=${{ matrix.python-version }}
+        bazel test //... --HERMETIC_PYTHON_VERSION=${{ matrix.python-version }}
