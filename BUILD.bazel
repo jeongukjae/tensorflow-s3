@@ -20,6 +20,12 @@ make_variable_tags(name = "make_variable_tags")
 
 gen_python_config_settings()
 
+py_package(
+    name = "tensorflow_s3",
+    packages = ["tensorflow_s3"],
+    deps = ["//tensorflow_s3"],
+)
+
 py_wheel(
     name = "tensorflow_s3_wheel",
     abi = "$(ABI)",
@@ -34,5 +40,8 @@ py_wheel(
         ":x86_64-unknown-linux-gnu": "manylinux2014_x86_64",
     }),
     toolchains = [":make_variable_tags"],
-    deps = ["//tensorflow_s3"],
+    deps = [":tensorflow_s3"],
+    author = "Ukjae Jeong",
+    author_email = "jeongukjae@gmail.com",
+    summary = "Test package to extend TensorFlow with S3 support",
 )
