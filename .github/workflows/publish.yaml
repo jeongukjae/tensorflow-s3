@@ -23,8 +23,22 @@ jobs:
     - name: Build and test all modules
       env:
         HERMETIC_PYTHON_VERSION: ${{ matrix.python-version }}
+      run: |
+        bazel build @pypi//...
+        bazel build //:tensorflow_s3_wheel
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Publish to PyPI
+      env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        bazel build @pypi//...
-        bazel run --stamp --embed_label=${{ github.ref_name }} //:tensorflow_s3_wheel.publish
+        pip install --upgrade pip
+        pip install twine
+
+        twine upload \
+          --repository-url https://upload.pypi.org/legacy/ \
+          bazel-bin/tensorflow_s3-*.whl

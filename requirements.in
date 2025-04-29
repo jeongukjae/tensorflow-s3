@@ -1,2 +1,1 @@
 tensorflow >= 2.19 , <= 2.20
-twine
