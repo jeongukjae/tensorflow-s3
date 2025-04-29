@@ -27,5 +27,5 @@ jobs:
         bazelisk-cache: true
     - name: Build and test all modules
       run: |
-        bazel build //... --HERMETIC_PYTHON_VERSION=${{ matrix.python-version }}
-        bazel test //... --HERMETIC_PYTHON_VERSION=${{ matrix.python-version }}
+        bazel build //... --repo_env=HERMETIC_PYTHON_VERSION=${{ matrix.python-version }}
+        bazel test //... --repo_env=HERMETIC_PYTHON_VERSION=${{ matrix.python-version }}
