@@ -6,8 +6,6 @@ whl_filegroup(
     whl = "@pypi//tensorflow:whl",
 )
 
-print("tensorflow_include", ":tensorflow_include")
-
 cc_library(
     name = "tf_header_lib",
     hdrs = [":tensorflow_include"],
