@@ -41,6 +41,7 @@ py_wheel(
     }),
     toolchains = [":make_variable_tags"],
     deps = [":tensorflow_s3"],
+    requires = ["tensorflow>=2.19,<2.20"],
     author = "Ukjae Jeong",
     author_email = "jeongukjae@gmail.com",
     summary = "Test package to extend TensorFlow with S3 support",
