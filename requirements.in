@@ -1,7 +1,1 @@
-# This requirements.in file is managed by hand.
-# Update this and run
-#   $ uv pip compile requirements.in -o requirements-lock.txt
-# to regenerate requirements-lock.txt
-#
-# TODO: Automate this process in BUILD.bazel.
 tensorflow == 2.19.0
