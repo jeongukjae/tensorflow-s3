@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-22.04]
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
@@ -20,7 +20,13 @@ jobs:
     - uses: bazel-contrib/setup-bazel@0.14.0
       with:
         bazelisk-cache: true
-    - name: Build and test all modules
+
+    - name: View glibc version
+      if: matrix.os == 'ubuntu-22.04'
+      run: |
+        ldd --version
+
+    - name: Build
       env:
         HERMETIC_PYTHON_VERSION: ${{ matrix.python-version }}
       run: bazel build //:tensorflow_s3_wheel
@@ -29,6 +35,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Publish to PyPI
       env:
         TWINE_USERNAME: __token__
