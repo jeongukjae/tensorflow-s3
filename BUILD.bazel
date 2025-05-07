@@ -32,7 +32,7 @@ py_wheel(
     distribution = "tensorflow_s3",
     dist_folder = "dist",
     python_tag = "$(PYTHON_TAG)",
-    version = "0.0.3",
+    version = "0.0.4",
     platform = select({
         ":aarch64-apple-darwin": "macosx_11_0_arm64",
         ":aarch64-unknown-linux-gnu": "manylinux2014_aarch64",
